@@ -1,54 +1,66 @@
-const getNotes = require('./notes');
+const notes = require('./notes');
 const yargs = require('yargs');
 const chalk = require('chalk');
 
 const command = process.argv[2];
 
-//console.log(process.argv);
-
-yargs.version("1.1.0");
-
 yargs.command({
     command: 'add',
     describe: 'Añade una nueva nota',
-    handler: () => {
-        console.log("Añadiendo una nueva nota!");
+    builder: {
+        title: {
+            describe: 'Título Nota',
+            demandOption: true,
+            type: 'string'
+        },
+        body: {
+            describe: 'Cuerpo de la Nota',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler(argv) {
+        notes.addNote(argv.title, argv.body);
     }
 });
 
 yargs.command({
     command: 'remove',
     describe: 'Borra una nota',
-    handler: () => {
-        console.log("Borrando la nota");
+    builder: {
+        title: {
+            describe: 'Título de la Nota',
+            demandOption: true,
+            type: 'string'
+
+        }
+    },
+    handler(argv) {
+        notes.removeNote(argv.title);
     }
 });
 
 yargs.command({
     command: 'list',
     describe: 'Lista las notas',
-    handler: () => {
-        console.log('Listando todas las notas');
+    handler() {
+        notes.listNotes();
     }
 });
 
 yargs.command({
     command: 'read',
     describe: 'Lee una nota',
-    handler: () => {
-        console.log("Leyendo la nota");
+    builder:{
+        title:{
+            describe: 'Título de la nota',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler(argv) {
+        notes.readNote(argv.title);
     }
 });
 
-console.log(yargs.argv);
-
-/*
-switch (command){
-    case "add": 
-        console.log('Agregando nota!');
-        break;
-    case "remove":
-        console.log('Borrando nota!');
-        break;
-}
-*/
+yargs.parse();
